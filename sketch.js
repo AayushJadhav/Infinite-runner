@@ -7,6 +7,10 @@ CANVAS.height = innerHeight;
 export const c = CANVAS.getContext('2d');
 var clearCanvas = () => c.clearRect(0, 0, CANVAS.width, CANVAS.height);
 
+const h1 = document.querySelector('h1');
+
+var gameState = 0;
+
 var frames = 0;
 
 class Ground {
@@ -38,8 +42,6 @@ function setup() {
     ground = new Ground();
     dino = new Dino(100, innerHeight - 150);
 
-    // console.log(dino.y)
-
     draw();
 }
 
@@ -47,15 +49,24 @@ function draw() {
     requestAnimationFrame(draw);
     clearCanvas();
 
-    if (isDinoTouchingGround()) {
-        dino.y = ground.y - dino.height;
+    if (gameState == 0 && gameState !== 1) {
+        h1.style.display = 'none';
+
+        if (isDinoTouchingGround()) {
+            dino.y = ground.y - dino.height;
+        }
+    
+        generateCactus();
+        collisionDetection();
+    
+        dino.draw();
+        ground.draw();
+
+    } else if (gameState == 1 && gameState !== 0) {
+        h1.style.display = 'block';
     }
 
-    generateCactus();
-
-    dino.draw();
-    ground.draw();
-
+    console.log(gameState)
     frames++;
 }
 
@@ -68,7 +79,13 @@ function isDinoTouchingGround() {
 }
 
 function collisionDetection() {
-    
+    cactusArray.forEach(cactus => {
+        if (cactus.x <= dino.x + dino.height &&
+            dino.y + dino.height >= cactus.y) {
+            CANVAS.style.display = 'none';
+            gameState = 1;
+        }
+    })
 }
 
 function generateCactus() {
@@ -76,35 +93,36 @@ function generateCactus() {
         cactusArray.push(new Cactus());
     }
 
-    for (var i = 0; i < cactusArray.length; i++) {
-        cactusArray[i].draw();
+    cactusArray.forEach(cactus => {
+        cactus.draw();
 
-        // console.log(cactusArray[i].x + ',' + cactusArray[i].height);
-
-        if (cactusArray[i].x < 0) {
-            cactusArray.shift()
+        if (cactus.x < 0) {
+            cactusArray.shift();
         }
-        
-    }
+    })
 }
 
 addEventListener('keydown', ({ key }) => {
-    switch (key) {
-        case 'w':
-            if (dino.y >= innerHeight - 150) { dino.veloY = -18; }
-            break;
-        case 's':
-            if (isDinoTouchingGround()) {
-                dino.height = 80;
-            }
-            break;
+    if (gameState == 0) {
+        switch (key) {
+            case 'w':
+                if (dino.y >= innerHeight - 150) { dino.veloY = -20; }
+                break;
+            case 's':
+                if (isDinoTouchingGround()) {
+                    dino.height = 80;
+                }
+                break;
+        }
     }
 });
 
 addEventListener('keyup', ({ key }) => {
-    switch (key) {
-        case 's':
-            dino.height = 150;
-            break;
+    if (gameState == 0) {
+        switch (key) {
+            case 's':
+                dino.height = 150;
+                break;
+        }
     }
 });

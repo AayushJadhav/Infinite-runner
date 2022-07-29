@@ -3,6 +3,18 @@
     padding: 0;
 }
 
+html {
+    text-align: center;
+}
+
+h1 {
+    position: absolute;
+    top: 38.2%;
+    left: 38.2%;
+    font-size: 80px;
+    font-family: -apple-system, sans-serif;
+}
+
 canvas {
     position: absolute;
     top: 0;
