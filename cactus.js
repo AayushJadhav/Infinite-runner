@@ -26,7 +26,7 @@ export default class Cactus {
 
     draw () {
         if (this.exists) {
-            c.fillStyle = "red";
+            c.fillStyle = "green";
             c.fillRect(this.x, this.y, this.width, this.height);
 
             this.x += this.veloX;
